@@ -3,101 +3,79 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ada Sparks Studio - TikTok connect</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: system-ui, -apple-system, Segoe UI, sans-serif;
-      background: #111;
-      color: #f4f4f4;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-    main {
-      width: 100%;
-      max-width: 760px;
-    }
-    h1 {
-      font-size: 1.6rem;
-      font-weight: 600;
-      margin: 0 0 12px;
-    }
-    p {
-      margin: 0 0 16px;
-      line-height: 1.5;
-      color: #ddd;
-    }
-    textarea {
-      width: 100%;
-      min-height: 160px;
-      font-size: 1.15rem;
-      line-height: 1.4;
-      padding: 16px;
-      border: 1px solid #555;
-      border-radius: 8px;
-      background: #1c1c1c;
-      color: #fff;
-      resize: vertical;
-      word-break: break-all;
-    }
-    button {
-      margin-top: 16px;
-      font-size: 1rem;
-      padding: 12px 20px;
-      border: 0;
-      border-radius: 8px;
-      background: #e8e8e8;
-      color: #111;
-      cursor: pointer;
-    }
-    button:hover { background: #fff; }
-    #status {
-      margin-top: 12px;
-      min-height: 1.4em;
-      color: #9f9;
-    }
-  </style>
+  <title>Ada Sparks Studio</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <header>
+    <a class="brand" href="./">Ada Sparks Studio</a>
+    <nav>
+      <a href="./">Home</a>
+      <a href="terms.html">Terms of Service</a>
+      <a href="privacy.html">Privacy Policy</a>
+    </nav>
+  </header>
   <main>
-    <h1>Ada Sparks Studio - TikTok connect</h1>
-    <p>Copy this and paste it into Ada Sparks Studio > Settings > TikTok</p>
-    <textarea id="callback-url" readonly></textarea>
-    <button type="button" id="copy-btn">Copy</button>
-    <p id="status" aria-live="polite"></p>
+
+    <h1>Ada Sparks Studio</h1>
+    <p class="lead">A desktop creator app for producing and publishing original, fact-checked maker videos — with honest AI disclosure — to TikTok, using TikTok’s official APIs only.</p>
+
+    <div class="card" id="callback" hidden>
+      <h2>Finish connecting TikTok</h2>
+      <p>Copy this address and paste it into Ada Sparks Studio → Settings → TikTok.</p>
+      <textarea id="callback-url" readonly></textarea>
+      <button type="button" id="copy-btn">Copy</button>
+      <p id="status" aria-live="polite"></p>
+    </div>
+
+    <h2>What it is</h2>
+    <p>Ada Sparks Studio runs on the creator’s own computer. It helps a creator write, fact-check, render and post short educational videos about making, electronics and code. Videos are original. They are labelled as AI-generated in the caption (including <code>#AIgenerated</code>) and, when TikTok’s Direct Post API is used, with TikTok’s official AI-generated content flag.</p>
+    <p>The Studio talks only to official platform APIs. It does not scrape TikTok, drive a browser, or post other people’s content.</p>
+
+    <h2>Posting to TikTok</h2>
+    <ul>
+      <li>The creator signs in with TikTok Login Kit and grants only the scopes the app needs (<code>user.info.basic</code>, <code>video.publish</code>, <code>video.upload</code>).</li>
+      <li>Before a Direct Post, the Studio shows the creator’s TikTok nickname, a preview, a privacy selector with no pre-selected default, interaction and commercial-disclosure controls (off by default), and the required consent text for TikTok’s Music Usage Confirmation.</li>
+      <li>Until TikTok approves the Content Posting API audit, videos can be sent to the creator’s TikTok inbox as drafts. The creator opens TikTok, chooses visibility (for example Everyone), turns on the AI-generated label, and taps Post.</li>
+    </ul>
+
+    <h2>Legal</h2>
+    <p>Please read the <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a> (linked in the header and footer of every page, with no menu to open).</p>
+    <p class="updated">Website last updated 22 November 2026.</p>
   </main>
+  <footer>
+    <div class="links">
+      <a href="./">Home</a>
+      <a href="terms.html">Terms of Service</a>
+      <a href="privacy.html">Privacy Policy</a>
+    </div>
+    <div>Ada Sparks Studio · operated by Nick Frost, United Kingdom.</div>
+  </footer>
   <script>
     (function () {
-      var box = document.getElementById('callback-url');
-      var status = document.getElementById('status');
-      box.value = window.location.href;
-
-      document.getElementById('copy-btn').addEventListener('click', function () {
-        var text = box.value;
-        function ok() { status.textContent = 'Copied.'; }
+      var params = new URLSearchParams(window.location.search);
+      if (!params.get("code")) return;
+      var box = document.getElementById("callback");
+      var input = document.getElementById("callback-url");
+      var status = document.getElementById("status");
+      box.hidden = false;
+      input.value = window.location.href;
+      box.scrollIntoView();
+      document.getElementById("copy-btn").addEventListener("click", function () {
+        function ok() { status.textContent = "Copied."; }
         function fail() {
-          box.focus();
-          box.select();
-          status.textContent = 'Copy failed. Select the text and copy it manually.';
+          input.focus(); input.select();
+          status.textContent = "Copy failed. Select the text and copy it manually.";
         }
         if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(text).then(ok).catch(fail);
+          navigator.clipboard.writeText(input.value).then(ok).catch(fail);
         } else {
-          box.focus();
-          box.select();
-          try {
-            if (document.execCommand('copy')) ok();
-            else fail();
-          } catch (e) {
-            fail();
-          }
+          try { input.focus(); input.select(); if (document.execCommand("copy")) ok(); else fail(); }
+          catch (e) { fail(); }
         }
       });
     })();
   </script>
+
 </body>
 </html>
