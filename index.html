@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ada Sparks Studio - TikTok connect</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+      background: #111;
+      color: #f4f4f4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    main {
+      width: 100%;
+      max-width: 760px;
+    }
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin: 0 0 12px;
+    }
+    p {
+      margin: 0 0 16px;
+      line-height: 1.5;
+      color: #ddd;
+    }
+    textarea {
+      width: 100%;
+      min-height: 160px;
+      font-size: 1.15rem;
+      line-height: 1.4;
+      padding: 16px;
+      border: 1px solid #555;
+      border-radius: 8px;
+      background: #1c1c1c;
+      color: #fff;
+      resize: vertical;
+      word-break: break-all;
+    }
+    button {
+      margin-top: 16px;
+      font-size: 1rem;
+      padding: 12px 20px;
+      border: 0;
+      border-radius: 8px;
+      background: #e8e8e8;
+      color: #111;
+      cursor: pointer;
+    }
+    button:hover { background: #fff; }
+    #status {
+      margin-top: 12px;
+      min-height: 1.4em;
+      color: #9f9;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Ada Sparks Studio - TikTok connect</h1>
+    <p>Copy this and paste it into Ada Sparks Studio > Settings > TikTok</p>
+    <textarea id="callback-url" readonly></textarea>
+    <button type="button" id="copy-btn">Copy</button>
+    <p id="status" aria-live="polite"></p>
+  </main>
+  <script>
+    (function () {
+      var box = document.getElementById('callback-url');
+      var status = document.getElementById('status');
+      box.value = window.location.href;
+
+      document.getElementById('copy-btn').addEventListener('click', function () {
+        var text = box.value;
+        function ok() { status.textContent = 'Copied.'; }
+        function fail() {
+          box.focus();
+          box.select();
+          status.textContent = 'Copy failed. Select the text and copy it manually.';
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(ok).catch(fail);
+        } else {
+          box.focus();
+          box.select();
+          try {
+            if (document.execCommand('copy')) ok();
+            else fail();
+          } catch (e) {
+            fail();
+          }
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
